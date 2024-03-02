@@ -15,14 +15,14 @@ const getCategory = async () => {
     btn.innerText = `${category.category_name}`;
     getById("categoryBtnContainer").appendChild(btn);
     btn.addEventListener("click", async () => {
+      loadingScreen(true);
       const url = `https://openapi.programming-hero.com/api/news/category/${category.category_id}`;
       const res = await fetch(url);
       const { data } = await res.json();
-        if(data.length===0) {
-            getById("warningDiv").classList.remove('hidden')
-        } else (
-            getById('warningDiv').classList.add('hidden')
-        )
+      if (data.length === 0) {
+        getById("warningDiv").classList.remove("hidden");
+      } else getById("warningDiv").classList.add("hidden");
+      loadingScreen(false);
       showData(data);
     });
   });
@@ -30,7 +30,7 @@ const getCategory = async () => {
 getCategory();
 
 const showData = (data) => {
-     getById("newsContainer").innerText = "";
+  getById("newsContainer").innerText = "";
   data.forEach((news) => {
     const div = document.createElement("div");
     div.innerHTML = `
@@ -47,9 +47,19 @@ const showData = (data) => {
   });
 };
 const getData = async () => {
+  loadingScreen(true);
   const URL = `https://openapi.programming-hero.com/api/news/category/08`;
   const res = await fetch(URL);
   const { data } = await res.json();
+  loadingScreen(false);
   showData(data);
 };
 getData();
+
+function loadingScreen(isDataLoaded) {
+  if (isDataLoaded) {
+    getById("loadingScreen").classList.remove("hidden");
+  } else {
+    getById("loadingScreen").classList.add("hidden");
+  }
+}
